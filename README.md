@@ -1,6 +1,7 @@
 # saltstack-sandbox
 
-A Vagrant-based sandbox environment for experimenting with SaltStack.
+A [Vagrant](http://www.vagrantup.com/)-based sandbox environment
+for experimenting with [SaltStack](http://saltstack.com/).
 
 ## Requirements
 
@@ -21,7 +22,7 @@ $ vagrant box add precise64 --provider vmware_fusion
 We use the [vagrant-hostmanager](https://github.com/smdahlen/vagrant-hostmanager)
 plugin to manage the `/etc/hosts` file for the Vagrant VMs.
 
-You can install this into your Vagrant installation:
+You can install this using the following command:
 
 ```sh
 $ vagrant plugin install vagrant-hostmanager
