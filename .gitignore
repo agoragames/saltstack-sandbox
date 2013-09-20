@@ -1,0 +1,4 @@
+base/*
+.ruby-version
+.ruby-gemset
+.vagrant
