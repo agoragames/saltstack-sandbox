@@ -58,6 +58,13 @@ vagrant@salt:~$ exit
 logout
 ```
 
+## Notes
+
+* The salt master is setup with `auto_accept: True` in its configuration
+  file. As the settings file says, "this setting will automatically
+  accept all incoming public keys from the minions. Note that this
+  is insecure."
+
 ## Copyright
 
 Copyright (c) 2013 David Czarnecki. See LICENSE.txt (MIT license) for
