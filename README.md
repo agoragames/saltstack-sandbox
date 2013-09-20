@@ -11,7 +11,15 @@ software versions:
 * [Vagrant](http://www.vagrantup.com/) 1.3.3
 * [VMWare Fusion](https://my.vmware.com/web/vmware/info/slug/desktop_end_user_computing/vmware_fusion/6_0) 6.0.0
 
+NOTE: VMWare Fusion is a paid product. I was using it because the
+      Virtual Box/precise64 combination would consistently
+      grey screen my Mac.
+
 ## Setup
+
+NOTE: For the commands below, you do NOT need to add the
+`--provider vmware_fusion` if you are not using a paid
+VM.
 
 Adding the `precise64` box to Vagrant:
 
@@ -28,17 +36,49 @@ You can install this using the following command:
 $ vagrant plugin install vagrant-hostmanager
 ```
 
+You can configure a number of attributes for the cluster
+of VMs to be provisioned at the top of the `Vagrantfile`.
+The default options are for 3 VMs, `salt`, `minion-1` and
+`minion-2`. The default configuration is:
+
+```ruby
+CONFIGURATION = {
+  domain: 'domain.com',
+  box: 'precise64',
+  box_url: 'http://files.vagrantup.com/precise64_vmware.box',
+  starting_ip_address: '192.168.50.100',
+  vms: [
+    {
+      name: :salt,
+      primary: true,
+      hostname: 'salt',
+      install_master: true
+    },
+    {
+      name: :salt_minion_1,
+      primary: false,
+      hostname: 'minion-1',
+      install_master: false
+    },
+    {
+      name: :salt_minion_2,
+      primary: false,
+      hostname: 'minion-2',
+      install_master: false
+    }
+  ]
+}
+```
+
 Run Vagrant to create the VMs:
 
 ```sh
 $ vagrant up --provider vmware_fusion
 ```
 
-This will provision 3 VMs using Salt as the provisioner,
-`salt`, `minion-1` and `minion-2`. After successfully
-running `vagrant up`, you should be able to SSH into
-your `salt` box and execute salt to ping the other VMs
-in the pool.
+After successfully running `vagrant up`, you should be able
+to SSH into your `salt` box and execute salt to ping the
+other VMs in the pool.
 
 ```sh
 $ vagrant ssh salt
@@ -64,11 +104,6 @@ logout
   file. As the settings file says, "this setting will automatically
   accept all incoming public keys from the minions. Note that this
   is insecure."
-
-## TODOs
-
-* Allow for configurable values for DOMAIN, BOX and BOX_URL for
-  the `Vagrantfile` via environment variables.
 
 ## Copyright
 

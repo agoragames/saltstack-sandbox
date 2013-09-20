@@ -1,7 +1,32 @@
+require 'ipaddr'
+
 VAGRANTFILE_API_VERSION = "2"
-DOMAIN = 'domain.com'
-BOX = 'precise64'
-BOX_URL = 'http://files.vagrantup.com/precise64_vmware.box'
+CONFIGURATION = {
+  domain: 'domain.com',
+  box: 'precise64',
+  box_url: 'http://files.vagrantup.com/precise64_vmware.box',
+  starting_ip_address: '192.168.50.100',
+  vms: [
+    {
+      name: :salt,
+      primary: true,
+      hostname: 'salt',
+      install_master: true
+    },
+    {
+      name: :salt_minion_1,
+      primary: false,
+      hostname: 'minion-1',
+      install_master: false
+    },
+    {
+      name: :salt_minion_2,
+      primary: false,
+      hostname: 'minion-2',
+      install_master: false
+    }
+  ]
+}
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # All Vagrant configuration is done here. The most common configuration
@@ -9,62 +34,36 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # please see the online documentation at vagrantup.com.
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = BOX
-  config.vm.box_url = BOX_URL
+  config.vm.box = CONFIGURATION[:box]
+  config.vm.box_url = CONFIGURATION[:box_url]
 
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = false
 
-  config.vm.define :salt, primary: true do |salt_master|
-    salt_master.vm.box = BOX
-    salt_master.vm.box_url = BOX_URL
-
-    salt_master.vm.hostname = "salt"
-    salt_master.vm.network :private_network, ip: '192.168.50.100'
-    salt_master.hostmanager.aliases = ["salt.#{DOMAIN}"]
-
-    salt_master.vm.provision :salt do |salt|
-      salt.install_type = 'stable'
-      salt.install_master = true
-      salt.verbose = true
-      salt.minion_config = 'salt/minion'
-      salt.master_config = 'salt/master'
-    end
+  ip_address = IPAddr.new(CONFIGURATION[:starting_ip_address])
+  CONFIGURATION[:vms].each do |vm|
+    vm[:ip_address] = ip_address.to_s
+    ip_address = ip_address.succ
   end
 
-  config.vm.define :salt_minion_1, primary: false do |salt_minion_1|
-    salt_minion_1.vm.box = BOX
-    salt_minion_1.vm.box_url = BOX_URL
+  CONFIGURATION[:vms].each do |vm|
+    config.vm.define vm[:name], primary: vm[:primary] do |vagrant_vm|
+      vagrant_vm.vm.box = CONFIGURATION[:box]
+      vagrant_vm.vm.box_url = CONFIGURATION[:box_url]
 
-    salt_minion_1.vm.hostname = "minion-1"
-    salt_minion_1.vm.network :private_network, ip: '192.168.50.101'
-    salt_minion_1.hostmanager.aliases = ["minion-1.#{DOMAIN}"]
+      vagrant_vm.vm.hostname = vm[:hostname]
+      vagrant_vm.vm.network :private_network, ip: vm[:ip_address]
+      vagrant_vm.hostmanager.aliases = ["#{vm[:hostname]}.#{CONFIGURATION[:domain]}"]
 
-    salt_minion_1.vm.provision :salt do |salt|
-      salt.install_type = 'stable'
-      salt.install_master = false
-      salt.verbose = true
-      salt.minion_config = 'salt/minion'
-      salt.master_config = 'salt/master'
-    end
-  end
-
-  config.vm.define :salt_minion_2, primary: false do |salt_minion_2|
-    salt_minion_2.vm.box = BOX
-    salt_minion_2.vm.box_url = BOX_URL
-
-    salt_minion_2.vm.hostname = "minion-2"
-    salt_minion_2.vm.network :private_network, ip: '192.168.50.102'
-    salt_minion_2.hostmanager.aliases = ["minion-2.#{DOMAIN}"]
-
-    salt_minion_2.vm.provision :salt do |salt|
-      salt.install_type = 'stable'
-      salt.install_master = false
-      salt.verbose = true
-      salt.minion_config = 'salt/minion'
-      salt.master_config = 'salt/master'
+      vagrant_vm.vm.provision :salt do |salt|
+        salt.install_type = 'stable'
+        salt.install_master = vm[:install_master]
+        salt.verbose = true
+        salt.master_config = 'salt/master'
+        salt.minion_config = 'salt/minion'
+      end
     end
   end
 
