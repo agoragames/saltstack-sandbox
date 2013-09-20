@@ -65,6 +65,11 @@ logout
   accept all incoming public keys from the minions. Note that this
   is insecure."
 
+## TODOs
+
+* Allow for configurable values for DOMAIN, BOX and BOX_URL for
+  the `Vagrantfile` via environment variables.
+
 ## Copyright
 
 Copyright (c) 2013 David Czarnecki. See LICENSE.txt (MIT license) for
