@@ -61,6 +61,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         salt.install_type = 'stable'
         salt.install_master = vm[:install_master]
         salt.verbose = true
+        salt.run_highstate = true if !vm[:install_master]
         salt.master_config = 'salt/master'
         salt.minion_config = 'salt/minion'
       end
