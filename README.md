@@ -78,7 +78,8 @@ $ vagrant up --provider vmware_fusion
 
 After successfully running `vagrant up`, you should be able
 to SSH into your `salt` box and execute salt to ping the
-other VMs in the pool.
+other VMs in the pool. You may need to run `vagrant reload`
+for the VMs to pickup the `/etc/hosts` file changes.
 
 ```sh
 $ vagrant ssh salt
