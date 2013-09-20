@@ -21,7 +21,7 @@ NOTE: For the commands below, you do NOT need to add the
 `--provider vmware_fusion` if you are not using a paid
 VM.
 
-Adding the `precise64` box to Vagrant:
+Add the `precise64` box to Vagrant:
 
 ```sh
 $ vagrant box add precise64 --provider vmware_fusion
@@ -30,7 +30,7 @@ $ vagrant box add precise64 --provider vmware_fusion
 We use the [vagrant-hostmanager](https://github.com/smdahlen/vagrant-hostmanager)
 plugin to manage the `/etc/hosts` file for the Vagrant VMs.
 
-You can install this using the following command:
+Install the plugin using the following command:
 
 ```sh
 $ vagrant plugin install vagrant-hostmanager
