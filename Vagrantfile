@@ -33,6 +33,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # options are documented and commented below. For a complete reference,
   # please see the online documentation at vagrantup.com.
 
+  config.vm.synced_folder 'salt/roots', '/srv'
+
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = CONFIGURATION[:box]
   config.vm.box_url = CONFIGURATION[:box_url]
