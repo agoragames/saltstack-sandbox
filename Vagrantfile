@@ -56,6 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       vagrant_vm.vm.hostname = vm[:hostname]
       vagrant_vm.vm.network :private_network, ip: vm[:ip_address]
       vagrant_vm.hostmanager.aliases = ["#{vm[:hostname]}.#{CONFIGURATION[:domain]}"]
+      vagrant_vm.vm.synced_folder 'salt/roots', '/srv' if vm[:install_master]
 
       vagrant_vm.vm.provision :salt do |salt|
         salt.install_type = 'stable'
