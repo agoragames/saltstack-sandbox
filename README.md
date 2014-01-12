@@ -108,7 +108,7 @@ logout
 
 ## Copyright
 
-Copyright (c) 2013 David Czarnecki. See LICENSE.txt (MIT license) for
+Copyright (c) 2013-2014 David Czarnecki. See LICENSE.txt (MIT license) for
 further details.
 
 ## Contributing to saltstack-sandbox
